@@ -9,3 +9,13 @@ curl -s localhost:9200/_msearch --data-binary '{"search_type":"query_then_fetch"
 #This query goes back 3 hours before the last query
 curl -s localhost:9200/_msearch --data-binary '{"search_type":"query_then_fetch","ignore_unavailable":true,"index":["era_logs*"]}
 {"size":0,"query":{"bool":{"filter":[{"range":{"_ts":{"gte":1645092676636,"lte":1645096276636,"format":"epoch_millis"}}},{"query_string":{"analyze_wildcard":true,"query":"dpt:5075"}}]}},"aggs":{"3":{"date_histogram":{"field":"_ts","min_doc_count":"0","extended_bounds":{"min":1645095615788,"max":1645099215788},"format":"epoch_millis","fixed_interval":"1m"},"aggs":{}}}}' |jq .took
+
+    1645142399000
+
+curl -s localhost:9200/_msearch --data-binary '{"search_type":"query_then_fetch","ignore_unavailable":true,"index":["era_logs*"]}
+{"size":0,"query":{"bool":{"filter":[{"range":{"_ts":{"gte":1645056000000,"lte":1645142399000,"format":"epoch_millis"}}},{"query_string":{"analyze_wildcard":true,"query":"dpt:5075"}}]}},"aggs":{"3":{"date_histogram":{"field":"_ts","min_doc_count":"0","extended_bounds":{"min":1645095615788,"max":1645099215788},"format":"epoch_millis","fixed_interval":"1m"},"aggs":{}}}}' |jq .took
+
+    
+Run tis.
+curl -s localhost:9200/_msearch --data-binary '{"search_type":"query_then_fetch","ignore_unavailable":true,"index":["era_logs*"]}
+{"size":0,"query":{"bool":{"filter":[{"range":{"_ts":{"gte":1645092676636,"lte":1645096276636,"format":"epoch_millis"}}},{"query_string":{"analyze_wildcard":true,"query":"dpt:5075"}}]}},"aggs":{"3":{"date_histogram":{"field":"_ts","min_doc_count":"0","extended_bounds":{"min":1645095615788,"max":1645099215788},"format":"epoch_millis","fixed_interval":"1m"},"aggs":{}}}}' |jq .took
