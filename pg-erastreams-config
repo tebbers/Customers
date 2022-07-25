@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: erastream-config
+  labels:
+    app: erastream
+data:
+  vector.yaml: |
+    sources:
+      event_hub_in:
+        type: kafka
+        bootstrap_servers: aeh-spyglass-cloudops-n05.servicebus.windows.net:9093
+        group_id: 'erastreams'
+        topics: ["aeh-spyglass-storageaccounts-n02"] #this will pull from all of the erasearchtopics Please change this to the correct topic
+        decoding:
+          codec: "json"
+        tls:
+          enabled: true
+        librdkafka_options:
+            "security.protocol": "sasl_ssl"
+            "sasl.mechanism": "PLAIN"
+            "sasl.username": "$$ConnectionString" # Double escaping needed
+            'sasl.password': "Endpoint=sb://aeh-spyglass-cloudops-n05.servicebus.windows.net/;SharedAccessKeyName=erastreams;SharedAccessKey=*** EntityPath=aeh-spyglass-storageaccounts-n02" ##ENTER SASL STRING HERE
+            "receive.message.max.bytes": "2147483647"
+    transforms:
+      parse_log_json:
+        type: remap
+        inputs: ["event_hub_in"]
+        source: |-
+          . = unnest!(.records)
+    sinks:
+      era-search:
+        acknowledgements:
+          enabled: true
+        type: elasticsearch
+        inputs: ["parse_log_json"]
+        endpoint: "http://eradb-quarry-deployment.erasearch.svc.cluster.local:9200" #Couldn't remember if you had SSL turned on or not.
+        bulk:
+         index: era_logs-%F #Name of the index
+        healthcheck: false
+        request:
+          headers:
+            Authorization: "Bearer ***"
+    api:
+      enabled: true
+      address: 127.0.0.1:8686
+      playground: false
