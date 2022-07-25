@@ -16,6 +16,7 @@ spec:
         tier: tools
       annotations:
         sidecar.istio.io/inject: "false"
+    
     spec:
       containers:
         - name: erastream
@@ -35,6 +36,13 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /etc/vector
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1G
+            requests:
+              cpu: 500m
+              memory: 1G        
       volumes:
         - name: config
           configMap:
