@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: erastream
+  name: erastream
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: erastream
+  template:
+    metadata:
+      labels:
+        app: erastream
+        tier: tools
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      containers:
+        - name: erastream
+          image: lmcrprod01.azurecr.io/streams:latest
+          args:
+#            - "--verbose"
+            - "--config-dir"
+            - "/etc/vector"
+            - "-w"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9200
+              name: http
+            - containerPort: 8686
+              name: api
+              protocol: TCP          
+          volumeMounts:
+            - name: config
+              mountPath: /etc/vector
+      volumes:
+        - name: config
+          configMap:
+            name: erastream-config
+restartPolicy: Always
+ 
