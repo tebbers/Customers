@@ -1,0 +1,1 @@
+curl -v -X POST "https://us1.api.wallarm.com/v1/objects/client/create" -H "X-WallarmAPI-UUID: ${wallarm_uuid}" -H "X-WallarmAPI-Secret: ${wallarm_secret}" -H "accept: application/json" -H "Content-Type: application/json" -d "{ \"name\": \"Tenant2\", \"vuln_prefix\": \"JOY2\", \"partner_uuid\": \"34bb3d48-73d4-46e8-a1e6-b2571cda75ef\"}"\n
